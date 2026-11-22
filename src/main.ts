@@ -31,7 +31,7 @@ function render(): void {
   document.documentElement.dir = t.direction;
   document.documentElement.dataset.theme = state.theme;
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', state.theme === 'dark' ? '#142A1B' : '#ffffff');
-  document.title = `${state.view === 'home' ? t.title : pageTitle(t, state.view)} | Saudi CV`;
+  document.title = state.locale === 'ar' ? pageTitle(t, state.view) : `${pageTitle(t, state.view)} | Saudi CV`;
   document.querySelector('meta[name="description"]')?.setAttribute('content', t.description);
   const logo = brandLogo();
   const themeAction = state.theme === 'light' ? t.themeDark : t.themeLight;
@@ -40,8 +40,8 @@ function render(): void {
   root!.innerHTML = `
     <div class="site-shell">
       <header class="topbar" aria-label="${safeText(state.locale === 'ar' ? 'أدوات العرض' : 'Display controls')}">
-        <a class="mini-brand" href="/" data-view="home" aria-label="Saudi CV home">
-          <img src="/assets/${logo}" alt="Saudi CV" width="52" height="52" />
+        <a class="mini-brand" href="/" data-view="home" aria-label="${safeText(state.locale === 'ar' ? 'العودة إلى الرئيسية' : 'Saudi CV home')}">
+          <img src="/assets/${logo}" alt="${safeText(t.brandLabel)}" width="52" height="52" />
         </a>
         <div class="controls">
           <button class="control" type="button" id="theme-toggle" aria-label="${safeText(themeAction)}">${state.theme === 'light' ? '◐' : '☼'} <span>${safeText(themeAction)}</span></button>
@@ -50,7 +50,7 @@ function render(): void {
       </header>
       <main id="main-content">${page}</main>
       <footer class="footer">
-        <a href="/" data-view="home" class="footer-brand"><img src="/assets/${logo}" alt="Saudi CV" loading="lazy" /></a>
+        <a href="/" data-view="home" class="footer-brand"><img src="/assets/${logo}" alt="${safeText(t.brandLabel)}" loading="lazy" /></a>
         <nav aria-label="${safeText(state.locale === 'ar' ? 'روابط قانونية' : 'Legal links')}">
           <a href="/about" data-view="about">${safeText(t.about)}</a>
           <a href="/privacy" data-view="privacy">${safeText(t.privacy)}</a>
@@ -95,7 +95,7 @@ function pageTitle(t: typeof copy[Locale], view: View): string {
 function homePage(t: typeof copy[Locale]): string {
   return `
     <section class="hero" aria-labelledby="brand-title">
-      <div class="hero-mark"><img class="hero-logo" src="/assets/${brandLogo()}" alt="Saudi CV" width="430" height="430" fetchpriority="high" /></div>
+      <div class="hero-mark"><img class="hero-logo" src="/assets/${brandLogo()}" alt="${safeText(t.brandLabel)}" width="430" height="430" fetchpriority="high" /></div>
       <h1 id="brand-title">${safeText(t.title)}</h1>
       <p class="slogan">${safeText(t.slogan)}</p>
     </section>
@@ -119,8 +119,8 @@ function homePage(t: typeof copy[Locale]): string {
 }
 
 function contentPage(t: typeof copy[Locale], view: View): string {
-  if (view === 'features') return `<section class="content-page"><p class="eyebrow">Saudi CV</p><h1>${safeText(t.featureIntro)}</h1><div class="feature-list">${t.featureItems.map((item, i) => `<article class="feature-item"><span class="number">${i + 1}</span><h2>${safeText(item)}</h2></article>`).join('')}</div><p class="stage-notice">${safeText(t.stageNotice)}</p><button class="primary" id="create-site">${safeText(t.create)}</button></section>`;
-  if (view === 'updates') return `<section class="content-page"><p class="eyebrow">Saudi CV</p><h1>${safeText(t.updates)}</h1><p class="lead">${safeText(t.updatesIntro)}</p><div class="category-list">${t.categories.map((item, i) => `<article class="category-card"><span class="number">0${i + 1}</span><h2>${safeText(item)}</h2><p>${safeText(t.stageNotice)}</p></article>`).join('')}</div></section>`;
+  if (view === 'features') return `<section class="content-page"><p class="eyebrow">${safeText(t.brandLabel)}</p><h1>${safeText(t.featureIntro)}</h1><div class="feature-list">${t.featureItems.map((item, i) => `<article class="feature-item"><span class="number">${i + 1}</span><h2>${safeText(item)}</h2></article>`).join('')}</div><p class="stage-notice">${safeText(t.featureNotice)}</p><button class="primary" id="create-site">${safeText(t.create)}</button></section>`;
+  if (view === 'updates') return `<section class="content-page"><p class="eyebrow">${safeText(t.brandLabel)}</p><h1>${safeText(t.updates)}</h1><p class="lead">${safeText(t.updatesIntro)}</p><div class="category-list">${t.categories.map((item, i) => `<article class="category-card"><span class="number">0${i + 1}</span><h2>${safeText(item)}</h2><p>${safeText(t.updatesEmpty)}</p></article>`).join('')}</div></section>`;
   if (view === 'register') return registerPage(t);
   if (view === 'login') return loginPage(t);
   if (view === 'recovery') return recoveryPage(t);
@@ -129,7 +129,7 @@ function contentPage(t: typeof copy[Locale], view: View): string {
   const body = state.locale === 'ar'
     ? 'هذه الصفحة قيد الإعداد. لن ننشر محتوى قانونياً نهائياً أو بيانات تعريفية غير معتمدة.'
     : 'This page is being prepared. Final legal text and unapproved operator details are not published here.';
-  return `<section class="content-page"><p class="eyebrow">Saudi CV</p><h1>${safeText(title)}</h1><p class="lead">${safeText(body)}</p></section>`;
+  return `<section class="content-page"><p class="eyebrow">${safeText(t.brandLabel)}</p><h1>${safeText(title)}</h1><p class="lead">${safeText(body)}</p></section>`;
 }
 
 function previewBanner(t: typeof copy[Locale]): string {
@@ -143,7 +143,7 @@ function field(id: string, label: string, placeholder: string, type = 'text', he
 
 function registerPage(t: typeof copy[Locale]): string {
   const roleOptions = t.roles.map(role => `<option>${safeText(role)}</option>`).join('');
-  return `<section class="content-page account-page"><p class="eyebrow">Saudi CV</p><h1>${safeText(t.registerTitle)}</h1>${previewBanner(t)}
+  return `<section class="content-page account-page"><p class="eyebrow">${safeText(t.brandLabel)}</p><h1>${safeText(t.registerTitle)}</h1>${previewBanner(t)}
     <form class="registration-form" aria-label="${safeText(t.registerTitle)}" autocomplete="off">
       <div class="form-field"><label for="register-role">${safeText(t.roleLabel)}</label><select id="register-role" disabled>${roleOptions}</select></div>
       ${field('register-name', t.nameRequired, t.namePlaceholder)}
@@ -163,7 +163,7 @@ function registerPage(t: typeof copy[Locale]): string {
 }
 
 function loginPage(t: typeof copy[Locale]): string {
-  return `<section class="content-page account-page"><p class="eyebrow">Saudi CV</p><h1>${safeText(t.loginTitle)}</h1>${previewBanner(t)}
+  return `<section class="content-page account-page"><p class="eyebrow">${safeText(t.brandLabel)}</p><h1>${safeText(t.loginTitle)}</h1>${previewBanner(t)}
     <form class="registration-form" aria-label="${safeText(t.loginTitle)}" autocomplete="off">
       ${field('login-email', t.emailRequired, t.emailPlaceholder, 'email')}
       ${field('login-password', t.passwordRequired, t.passwordPlaceholder, 'password')}
@@ -175,7 +175,7 @@ function loginPage(t: typeof copy[Locale]): string {
 }
 
 function recoveryPage(t: typeof copy[Locale]): string {
-  return `<section class="content-page account-page"><p class="eyebrow">Saudi CV</p><h1>${safeText(t.recoveryTitle)}</h1>${previewBanner(t)}
+  return `<section class="content-page account-page"><p class="eyebrow">${safeText(t.brandLabel)}</p><h1>${safeText(t.recoveryTitle)}</h1>${previewBanner(t)}
     <form class="registration-form" aria-label="${safeText(t.recoveryTitle)}" autocomplete="off">
       ${field('recovery-email', t.emailRequired, t.emailPlaceholder, 'email')}
       <button class="primary submit-disabled" type="button" disabled>${safeText(t.recoverySubmit)}</button>
