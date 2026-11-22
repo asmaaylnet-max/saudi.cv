@@ -1,0 +1,23 @@
+name = "saudi-cv-staging"
+compatibility_date = "2026-11-22"
+pages_build_output_dir = "./dist"
+
+# This Pages project is staging-only. These bindings must never reference production resources.
+[[d1_databases]]
+binding = "DB"
+database_name = "saudicv-stage-db-20261122"
+database_id = "b6313bac-3326-488d-ac3c-a0b48a0107a6"
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "saudicv-stage-media-20261122"
+
+# Pages preview deployments share only these isolated staging resources.
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "saudicv-stage-db-20261122"
+database_id = "b6313bac-3326-488d-ac3c-a0b48a0107a6"
+
+[[env.preview.r2_buckets]]
+binding = "MEDIA"
+bucket_name = "saudicv-stage-media-20261122"

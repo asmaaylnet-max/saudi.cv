@@ -1,0 +1,14 @@
+{
+  "name": "منصة الهوية المهنية السعودية",
+  "short_name": "Saudi CV",
+  "description": "ظهور رقمي متكامل يليق بك",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#14512c",
+  "icons": [
+    { "src": "/assets/emblem.webp", "sizes": "any", "type": "image/webp", "purpose": "any maskable" }
+  ]
+}
